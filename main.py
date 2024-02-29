@@ -1,64 +1,91 @@
-# import requests
-import aiohttp
 import asyncio
+import random
+import aiohttp
+from aiogram import Bot, Dispatcher
+from aiogram.enums import parse_mode
+from aiogram.filters import Command
+from aiogram.types import Update, Message
+# from aiogram.enums.dice_emoji import DiceEmoji
+from config_reader import config
 
-base_url = 'https://api.telegram.org'
-photo = 'https://experience-ireland.s3.amazonaws.com/thumbs2/b3d52580-d200-11e8-9b53-02b782d69cda.384x289.jpg'
-caption = 'Hello, Universe!'
-emoji = '🏀&reply_markup={"inline_keyboard": [[{"text": "🎳", "callback_data": "string"}]]}'
-lat = 55.74945068
-lon = 37.54282379
 
-def make_send_message_url(token, chat_id, text):
-    return f'{base_url}/bot{token}/sendMessage?chat_id={chat_id}&text={text}'
+async def start_command(message: Message, bot: Bot):
+    chat_id = message.chat.id
+    text = '''
+   Привет! Я бот, который отвечает на твои запросы!
+Напиши /product, чтобы узнать про товар.
+Напиши /dice, чтобы получить emoji.
+Напиши /location, чтобы найти точку на карте.
+Напиши /quote, чтобы прочитать цитату из "Игры престолов".
+'''
+    await bot.send_message(chat_id, text)
 
-def make_send_photo_url(token, chat_id, photo, caption):
-    return f'{base_url}/bot{token}/sendPhoto?chat_id={chat_id}&photo={photo}&caption={caption}'
 
-def make_send_dice_url(token, chat_id, emo):
-    return f'{base_url}/bot{token}/sendDice?chat_id={chat_id}&emoji={emo}'
+async def get_product(prodict_id):
+    url = f'https://fakestoreapi.com/products/{prodict_id}'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.json()
 
-def make_send_location_url(token, chat_id, latitude, longitude):
-    return f'{base_url}/bot{token}/sendLocation?chat_id={chat_id}&latitude={latitude}&longitude={longitude}'
 
-def get_updates_url(token, offset=None):
-    return f'{base_url}/bot{token}/getUpdates?offset={offset}'
+async def product_command(message: Message, bot: Bot):
+    chat_id = message.chat.id
+    prod_id = random.randint(1, 20)
+    product = await get_product(prod_id)
+    title = product['title']
+    price = product['price']
+    image_url = product['image']
+    description = product['description']
+    rating = product['rating']['rate']
+    count = product['rating']['count']
+    rating = '❤' * int(rating) + f' ({count})'
+    text = f'''
+* Название: <b>{title}</b>
+* Цена: <b>{price}</b> руб.
+* Рейтинг: {rating}
+* Описание:
 
-async def answer_to_message(session, token, update):
-    chat_id = update['message']['chat']['id']
-    message = update['message']['text']
-    if message == '1':
-        url = make_send_photo_url(token, chat_id, photo, caption)
-    elif message == '2':
-        url = make_send_dice_url(token, chat_id, emoji)
-    elif message == '3':
-        url = make_send_location_url(token, chat_id, lat, lon)
-    else:
-        url = make_send_message_url(token, chat_id, 'Наш ответ!')
-    async with session.get(url) as response:
-        result = await response.json()
-        print(result)
+<i>{description}</i>    
+'''
+    await bot.send_photo(chat_id, photo=image_url, caption=text, parse_mode='html')
+
+
+async def dice_command(message: Message, bot: Bot):
+    chat_id = message.chat.id
+    emojis = ['🎲', '🎯', '🏀', '⚽', '🎳', '🎰']
+    emo_id = random.randint(0, 5)
+    await message.answer_dice(emoji=emojis[emo_id])
+
+
+async def location_command(message: Message):
+    latitude = 44.897171
+    longitude = 37.313965
+    await message.answer_location(latitude, longitude)
+
+
+async def quote_command(message: Message):
+    url = 'https://api.gameofthronesquotes.xyz/v1/random'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            quote = await response.json()
+    sentence = quote['sentence']
+    speaker = quote['character']['name']
+    text = f'{speaker} сказал(а): \n\n\
+- {sentence}'
+    await message.answer(text)
+
 
 async def main():
-    token = '6101955433:AAFIqsV8NRXr6S05Uajr265hJUUbmv-jrfg'
-    offset = -1
-    async with aiohttp.ClientSession() as session:
-        while True:
-            url = get_updates_url(token, offset=offset)
-            async with session.get(url) as response:
-                result = await response.json()
-                # user_first_name = result['result']['chat']['first_name']
-                # print(f'{user_first_name} отправил сообщение')
-                for update in result['result']:
-                    await answer_to_message(session, token, update)
-                    offset = update['update_id'] + 1
-            await asyncio.sleep(5)
+    bot = Bot(token=config.bot_token.get_secret_value())
+    dp = Dispatcher()
+    dp.message.register(start_command, Command(commands='start'))
+    dp.message.register(product_command, Command(commands='product'))
+    dp.message.register(dice_command, Command('dice'))
+    dp.message.register(location_command, Command('location'))
+    dp.message.register(quote_command, Command('quote'))
 
-# asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-asyncio.run(main())
+    await dp.start_polling(bot)
 
-# response = requests.get(url)
-# result = response.json()
-# print(result)
-# first_name = result['result']['from']['first_name']
-# print(first_name)
+
+if __name__ == '__main__':
+    asyncio.run(main())
