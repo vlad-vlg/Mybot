@@ -3,10 +3,32 @@ import random
 import re
 import aiohttp
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import Command, CommandStart
+from aiogram.filters import Command, CommandStart, BaseFilter
 from aiogram.types import Message
 # from aiogram.enums.dice_emoji import DiceEmoji
 from config_reader import config
+
+
+async def check_is_admin(user_id: int):
+    admins = [1, 2, 3]
+    if user_id in admins:
+        return admins
+
+
+class IsAdmin(BaseFilter):
+    async def __call__(self, message):
+        admins_list = await check_is_admin(message.from_user.id)
+        if admins_list:
+            return {'admins_list': admins_list}
+
+
+async def admin_only(message: Message, admins_list):
+    await message.answer(f'Да, Вы админ!\nСписок администраторов: {admins_list}')
+
+
+class FromTime(BaseFilter):
+    async def __call__(self, *args, **kwargs):
+        return None
 
 
 async def start_command_referral(message: Message, bot: Bot, referral_match: re.Match):
@@ -106,6 +128,7 @@ async def main():
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher()
 
+    dp.message.register(admin_only, IsAdmin())
     dp.message.register(start_command_referral,
                         CommandStart(deep_link=True),
                         F.text.regexp(r'.+ referral_(\d+)').as_('referral_match')
