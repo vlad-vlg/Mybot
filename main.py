@@ -2,7 +2,7 @@ import asyncio
 import random
 import re
 import aiohttp
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher, F, Router
 from aiogram.filters import Command, CommandStart, BaseFilter
 from aiogram.types import Message
 # from aiogram.enums.dice_emoji import DiceEmoji
@@ -30,9 +30,9 @@ async def admin_only(message: Message, admins_list):
 class FromTime(BaseFilter):
     async def __call__(self, localtime):
         localtime_hour = datetime.now().hour
-        localtime_min = datetime.now().minute
+        # localtime_min = datetime.now().minute
         # print(localtime_hour, localtime_min)
-        if localtime_hour not in range(9, 19):
+        if localtime_hour not in range(9, 18):
             return True
 
 
@@ -108,13 +108,12 @@ async def quote_command(message: Message):
             quote = await response.json()
     sentence = quote['sentence']
     speaker = quote['character']['name']
-    text = f'{speaker} сказал(а): \n\n\
-- {sentence}'
+    text = f'{speaker} сказал(а): \n\n- {sentence}'
     await message.answer(text)
 
 
 async def help_command(message: Message):
-    await message.answer('Вы нажали !HELP')
+    await message.answer('Вы набрали !help')
 
 
 async def text_buy(message: Message):
@@ -123,7 +122,8 @@ async def text_buy(message: Message):
 
 async def anything(message: Message, text: re.Match):
     msg = text.group()
-    await message.answer(f'Вы набрали не (/start | !start) \nВаш запрос - "{msg}"')
+    await message.answer(f'Вы набрали не (/start | !start)\n'
+                         f'Ваш запрос - "{msg}"')
 
 
 async def start_command_items(message: Message, bot: Bot, items_match: re.Match):
@@ -133,32 +133,46 @@ async def start_command_items(message: Message, bot: Bot, items_match: re.Match)
     await message.answer(f'ID товара: {item_id}\nКоличество товара: {quantity}')
 
 
+AdminRouter = Router()
+UserRouter = Router()
+ElseRouter = Router()
+AdminCommandsRouter = Router()
+AdminMenuRouter = Router()
+UserCommandsRouter = Router()
+UserMenuRouter = Router()
+
+
 async def main():
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher()
+    dp.include_routers(AdminRouter, UserRouter, ElseRouter)
+    AdminRouter.include_routers(AdminCommandsRouter, AdminMenuRouter)
+    UserRouter.include_routers(UserCommandsRouter, UserMenuRouter)
 
     dp.message.register(from_time_only, FromTime())
-    dp.message.register(admin_only, IsAdmin())
-    dp.message.register(start_command_referral,
-                        CommandStart(deep_link=True),
-                        F.text.regexp(r'.+ referral_(\d+)').as_('referral_match')
-                        )
-    dp.message.register(start_command_items,
-                        CommandStart(deep_link=True),
-                        F.text.regexp(r'.+ item_(\d+)_quantity_(\d+)').as_('items_match')
-                        )
-    dp.message.register(start_command, CommandStart())
-    dp.message.register(product_command, Command(commands='product'))
-    dp.message.register(dice_command, Command('dice'))
-    dp.message.register(location_command, Command('location'))
-    dp.message.register(quote_command, Command('quote'))
-    dp.message.register(help_command, Command(commands='help', prefix='!', ignore_case=True))
-    dp.message.register(text_buy, (F.text.lower() == 'купить') | (F.text == 'Приобрести товары'))
-    dp.message.register(anything,
-                        F.text != '/start',
-                        F.text != '!start',
-                        F.text.regexp(r'.+').as_('text')
-                        )
+    AdminRouter.message.filter(IsAdmin())
+    AdminRouter.message.register(admin_only)
+
+    UserCommandsRouter.message.register(start_command_referral,
+                                        CommandStart(deep_link=True),
+                                        F.text.regexp(r'.+ referral_(\d+)').as_('referral_match')
+                                        )
+    UserCommandsRouter.message.register(start_command_items,
+                                        CommandStart(deep_link=True),
+                                        F.text.regexp(r'.+ item_(\d+)_quantity_(\d+)').as_('items_match')
+                                        )
+    UserCommandsRouter.message.register(start_command, CommandStart())
+    UserCommandsRouter.message.register(product_command, Command(commands='product'))
+    UserCommandsRouter.message.register(dice_command, Command('dice'))
+    UserCommandsRouter.message.register(location_command, Command('location'))
+    UserCommandsRouter.message.register(quote_command, Command('quote'))
+    UserCommandsRouter.message.register(help_command, Command(commands='help', prefix='!', ignore_case=True))
+    UserMenuRouter.message.register(text_buy, (F.text.lower() == 'купить') | (F.text == 'Приобрести товары'))
+    ElseRouter.message.register(anything,
+                                F.text != '/start',
+                                F.text != '!start',
+                                F.text.regexp(r'.+').as_('text')
+                                )
     await dp.start_polling(bot)
 
 
