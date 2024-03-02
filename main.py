@@ -7,6 +7,7 @@ from aiogram.filters import Command, CommandStart, BaseFilter
 from aiogram.types import Message
 # from aiogram.enums.dice_emoji import DiceEmoji
 from config_reader import config
+from datetime import datetime
 
 
 async def check_is_admin(user_id: int):
@@ -27,8 +28,16 @@ async def admin_only(message: Message, admins_list):
 
 
 class FromTime(BaseFilter):
-    async def __call__(self, *args, **kwargs):
-        return None
+    async def __call__(self, localtime):
+        localtime_hour = datetime.now().hour
+        localtime_min = datetime.now().minute
+        # print(localtime_hour, localtime_min)
+        if localtime_hour not in range(9, 19):
+            return True
+
+
+async def from_time_only(message: Message):
+    await message.answer(f'Часы работы сервера с 9:00 до 18:00.')
 
 
 async def start_command_referral(message: Message, bot: Bot, referral_match: re.Match):
@@ -128,6 +137,7 @@ async def main():
     bot = Bot(token=config.bot_token.get_secret_value())
     dp = Dispatcher()
 
+    dp.message.register(from_time_only, FromTime())
     dp.message.register(admin_only, IsAdmin())
     dp.message.register(start_command_referral,
                         CommandStart(deep_link=True),
