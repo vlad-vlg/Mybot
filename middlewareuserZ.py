@@ -12,6 +12,19 @@ class UserZMiddleware(BaseMiddleware):
             event: TelegramObject,
             data: Dict[str, Any],
     ) -> Any:
+        age = event.text
+        print(age)
+        print(type(age))
+        if age.isdigit() and int(age) >= 18:
+            if int(age) > 100:
+                await event.answer('О, да Вы долгожитель!')
+                return await handler(event, data)
+            else:
+                return await handler(event, data)
+        await event.answer(
+            'Вы еще слишком молоды!\n'
+            'Обратитесь после достижения совершеннолетия'
+        )
         user: User = data['event_from_user']
         print(user)
         user_name = user.first_name.lower()

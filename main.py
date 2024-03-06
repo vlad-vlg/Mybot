@@ -148,8 +148,7 @@ async def main():
     dp.include_routers(AdminRouter, UserRouter, ElseRouter)
     AdminRouter.include_routers(AdminCommandsRouter, AdminMenuRouter)
     UserRouter.include_routers(UserCommandsRouter, UserMenuRouter)
-
-    dp.message.register(from_time_only, FromTime())
+    # dp.message.register(from_time_only, FromTime())
     AdminRouter.message.filter(IsAdmin())
     AdminRouter.message.register(admin_only)
 
