@@ -35,7 +35,7 @@ async def get_medicine_enter_location(message: Message, state: FSMContext):
 async def get_medicine_enter_full_name(message: Message, state: FSMContext):
     full_name = message.text
     await state.update_data(full_name=full_name)
-    await message.answer('Введите название лекарств,дозировку и количество')
+    await message.answer('Введите название лекарств, дозировку и количество')
     await state.set_state(GetMedicine.EnterPrescription)
 
 
