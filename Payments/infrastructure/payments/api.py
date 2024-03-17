@@ -1,46 +1,109 @@
+from urllib.parse import urljoin
+from infrastructure.payments.exception import APINotAvailable
+from infrastructure.payments.types import Payment, PaymentUpdate
 import aiohttp
 
 
 class NowPaymentsAPI:
     def __init__(self, api_key):
         self.api_key = api_key
-        self.base_url = 'https://api.nowpayments.io/v1'
+        self.base_url = 'https://api.nowpayments.io/v1/'
         self.session = aiohttp.ClientSession()
         self.headers = {
             'Content_Type': 'application/json',
             'Accept': 'application/json',
             'X-API-KEY': self.api_key
         }
-    
 
-    async def __request(self, metod, *relative_path_parts, **kwargs)
+    async def __request(self, method, *relative_path_parts, **kwargs):
         parts = '/'.join(relative_path_parts)
         url = urljoin(self.base_url, parts)
-        async with getattr(self.sessoins, metod)(url,
-                                                headers=self.headers,
-                                                verify_ssl=False,
-                                                **kwargs) as response:
-            result = await response.json()
-            return result
-
+        async with getattr(self.session, method)(url,
+                                                 headers=self.headers,
+                                                 verify_ssl=False,
+                                                 **kwargs) as response:
+            try:
+                result = await response.json()
+                return result
+            except Exception as e:
+                print(e)
+                print(await response.text())
 
     async def get(self, *relative_path_parts, **kwargs):
         data = kwargs.pop('data', {})
         params = list(data.items())
         return await self.__request('get', *relative_path_parts, params=params, **kwargs)
 
-
-    async def post(self. *relative_path_parts, **kwargs):
+    async def post(self, *relative_path_parts, **kwargs):
         data = kwargs.pop('data', {})
         return await self.__request('post', *relative_path_parts, json=data, **kwargs)
-    
-    
+
     async def get_api_status(self):
         result = await self.get('status')
         if result.get('message') != 'ok':
             raise APINotAvailable()
         return True
 
+    async def create_payment(self, price_amount: float,
+                             price_currency: str,
+                             pay_currency: str,
+                             order_id: str = None,
+                             order_description: str = None,
+                             ipn_callback_url: str = None,
+                             pay_amount: float = None,
+                             purchase_id: str = None,
+                             payout_address: str = None,
+                             payout_currency: str = None,
+                             payout_extra_id: str = None,
+                             fixed_rate: bool = False):
+        data = {
+            'price_amount': price_amount,
+            'price_currency': price_currency,
+            'pay_currency': pay_currency
+        }
+        if order_id:
+            data['order_id'] = order_id
+        if order_description:
+            data['order_description'] = order_description
+        if ipn_callback_url:
+            data['ipn_callback_url'] = ipn_callback_url
+        if pay_amount:
+            data['pay_amount'] = pay_amount
+        if purchase_id:
+            data['purchase_id'] = purchase_id
+        if payout_address:
+            data['payout_address'] = payout_address
+        if payout_currency:
+            data['payout_currency'] = payout_currency
+        if payout_extra_id:
+            data['payout_extra_id'] = payout_extra_id
+        if fixed_rate:
+            data['fixed_rate'] = fixed_rate
+        result = await self.post('payment', data=data)
+        return Payment(**result)
+
+    async def get_payment_status(self, payment_id: int):
+        result = await self.get('payment', str(payment_id))
+        return PaymentUpdate(**result)
 
 
-            
+if __name__ == '__main__':
+    async def main():
+        api = NowPaymentsAPI('')
+        price = 10
+        print(await api.get_api_status())
+        payment = await api.create_payment(price_amount=price,
+                                           price_currency='usd',
+                                           pay_currency='btc',
+                                           order_id='123',
+                                           order_description='test')
+        print(payment)
+
+        payment_status = await api.get_payment_status(payment.payment_id)
+        print(payment_status)
+        await api.session.close()
+
+
+    import asyncio
+
+    asyncio.run(main())

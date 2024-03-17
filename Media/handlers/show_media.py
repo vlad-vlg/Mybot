@@ -135,9 +135,7 @@ async def cmd_send_album(message: Message, state: FSMContext):
     #    print(data)
     #    album_files = [data[key] for key in data]
     #    print(album_files)
-    album_builder = MediaGroupBuilder(
-        caption="Ваш альбом"
-    )
+    album_builder = MediaGroupBuilder(caption="Ваш альбом")
     if len(data) <= 10:
         for key in data:
             album_builder.add_document(
@@ -156,4 +154,3 @@ async def cmd_send_album(message: Message, state: FSMContext):
             'Для отмены отправьте команду /cancel\n'
             'Для возврата в начало работы отправьте команду /start'
         )
-
