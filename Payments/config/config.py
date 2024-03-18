@@ -12,6 +12,7 @@ class TgBot:
 @dataclass
 class Config:
     tgbot: TgBot
+    payments_api_key: str
 
 
 def load_config(path: Union[str, None] = '.env') -> Config:
@@ -20,5 +21,6 @@ def load_config(path: Union[str, None] = '.env') -> Config:
     return Config(
         tgbot=TgBot(
             token=env.str('BOT_TOKEN')
-        )
+        ),
+        payments_api_key=env.str('NOWPAYMENTS_API_KEY')
     )

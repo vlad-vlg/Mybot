@@ -40,7 +40,7 @@ class NowPaymentsAPI:
 
     async def get_api_status(self):
         result = await self.get('status')
-        if result.get('message') != 'ok':
+        if result.get('message') != 'OK':
             raise APINotAvailable()
         return True
 

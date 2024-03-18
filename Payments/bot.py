@@ -19,9 +19,12 @@ async def main():
     bot = Bot(token=config.tgbot.token,
               default=DefaultBotProperties(parse_mode='html')
               )
+    nowpayments = NowPaymentsAPI(config.payments_api_key)
     dp = Dispatcher(storage=storage)
-    dp.include_router(show_media.router)
+    dp.include_router(payments_router)
     dp.include_router(other_handlers.router)
+    dp.message.middleware(PaymentsMiddleware(nowpayments))
+    dp.callback_query.middleware(PaymentsMiddleware(nowpayments))
     await dp.start_polling(bot)
 
 
