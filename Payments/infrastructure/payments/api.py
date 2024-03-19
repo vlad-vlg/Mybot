@@ -90,7 +90,12 @@ class NowPaymentsAPI:
         result = await self.get('payment', str(payment_id))
         print(result)
         return PaymentUpdate(**result)
-
+        
+    async def get_available_currencies(self):
+        result = await self.get('currencies')
+        print(result)
+        currencies = result.get('currencies')
+        return currencies
 
 if __name__ == '__main__':
     async def main():
