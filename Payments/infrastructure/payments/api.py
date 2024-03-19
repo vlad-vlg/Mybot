@@ -95,7 +95,7 @@ class NowPaymentsAPI:
         result = await self.get('currencies')
         print(result)
         currencies = result.get('currencies')
-        return currencies
+        return currenciesh
 
 if __name__ == '__main__':
     async def main():
