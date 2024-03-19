@@ -1,3 +1,4 @@
+import logging
 from urllib.parse import urljoin
 from infrastructure.payments.exception import APINotAvailable
 from infrastructure.payments.types import Payment, PaymentUpdate
@@ -12,7 +13,7 @@ class NowPaymentsAPI:
         self.headers = {
             'Content_Type': 'application/json',
             'Accept': 'application/json',
-            'X-API-KEY': self.api_key
+            'x-api-key': self.api_key
         }
 
     async def __request(self, method, *relative_path_parts, **kwargs):
@@ -24,10 +25,12 @@ class NowPaymentsAPI:
                                                  **kwargs) as response:
             try:
                 result = await response.json()
-                return result
+
             except Exception as e:
-                print(e)
-                print(await response.text())
+                logging.exception(e)
+                logging.info(f'{await response.text()}')
+                # print(await response.text())
+            return result
 
     async def get(self, *relative_path_parts, **kwargs):
         data = kwargs.pop('data', {})
@@ -55,7 +58,7 @@ class NowPaymentsAPI:
                              payout_address: str = None,
                              payout_currency: str = None,
                              payout_extra_id: str = None,
-                             fixed_rate: bool = False):
+                             is_fixed_rate: bool = False):
         data = {
             'price_amount': price_amount,
             'price_currency': price_currency,
@@ -77,20 +80,22 @@ class NowPaymentsAPI:
             data['payout_currency'] = payout_currency
         if payout_extra_id:
             data['payout_extra_id'] = payout_extra_id
-        if fixed_rate:
-            data['fixed_rate'] = fixed_rate
+        if is_fixed_rate:
+            data['fixed_rate'] = is_fixed_rate
         result = await self.post('payment', data=data)
+        print(result)
         return Payment(**result)
 
     async def get_payment_status(self, payment_id: int):
         result = await self.get('payment', str(payment_id))
+        print(result)
         return PaymentUpdate(**result)
 
 
 if __name__ == '__main__':
     async def main():
         api = NowPaymentsAPI('')
-        price = 10
+        price = 30
         print(await api.get_api_status())
         payment = await api.create_payment(price_amount=price,
                                            price_currency='usd',

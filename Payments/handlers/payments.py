@@ -1,15 +1,36 @@
 from aiogram import Router, F, Bot
-from aiogram.filters import Command, CommandStart, StateFilter
-from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import default_state
-from aiogram.types import Message, Document
-from aiogram.utils.media_group import MediaGroupBuilder
-
+from aiogram.filters import Command, CommandStart
+from aiogram.types import Message
+from infrastructure.payments.api import NowPaymentsAPI
+from infrastructure.payments.exception import APINotAvailable
+from infrastructure.payments.types import Payment, PaymentStatus, PaymentUpdate
+from middlewares import nowpayments
 
 payments_router = Router()
 
 
-@payments_router.message(Command('payment')
+@payments_router.message(CommandStart())
+async def cmd_start(message: Message):
+    if message.from_user.first_name:
+        text = f'Привет, {message.from_user.first_name}!'
+    else:
+        text = 'Привет!'
+    await message.answer(text)
+    await message.answer(
+        'Это задание к уроку 7.11 <b>"Прием платежей с помощью API"</b>\n\n'
+        'Для начала выполнения наберите команду /payment\n'
+        'Для возврата в начальное меню наберите команду /cancel'
+    )
+
+
+@payments_router.message(Command('cancel'))
+async def cmd_cancel(message: Message):
+    await message.answer(
+        'Вернулись в начало'
+    )
+
+
+@payments_router.message(Command('payment'))
 async def payment(message: Message, nowpayments: NowPaymentsAPI):
     try:
         await nowpayments.get_api_status()
@@ -17,9 +38,8 @@ async def payment(message: Message, nowpayments: NowPaymentsAPI):
         await message.answer(f'API is not available: {e}')
         return
 
-
-    price = 10
-    currency = 'btc'
+    price = 20
+    currency = 'ada'
     payment: Payment = await nowpayments.create_payment(
         price_amount=price,
         price_currency='usd',
@@ -28,8 +48,21 @@ async def payment(message: Message, nowpayments: NowPaymentsAPI):
         order_description=f'{message.from_user.id}'
     )
     await message.answer(
-        f''
-        f''
-        f''
-        f''
+        f'Пожалуйста, отправьте не менее <b>{payment.pay_amount:.6f} {currency.upper()}</b> на адрес ниже.\n'
+        f'Ваш ID платежа: <b>{payment.payment_id}</b>.\n'
+        f'Нажмите на команду /check_payment_{payment.payment_id}, '
+        f'чтобы проверить статус транзакции.\n\n'
+        f'Адрес: <code>{payment.pay_address}</code>\n'
+        f'Сумма: <code>{payment.pay_amount:.6f}</code>'
     )
+
+
+@payments_router.message(F.text.regexp(r'^/check_payment_(\d+)$').as_('payment_id_match'))
+async def check_payment(message: Message, nowpayments: NowPaymentsAPI, payment_id_match):
+    payment_id = payment_id_match.group(1)
+    payment_status = await nowpayments.get_payment_status(payment_id)
+
+    if payment_status.payment_status in (PaymentStatus.CONFIRMED, PaymentStatus.FINISHED):
+        await message.answer(f'Платеж {payment_id} подтвержден.')
+    else:
+        await message.answer(f'Платеж {payment_id} еще не подтвержден!')

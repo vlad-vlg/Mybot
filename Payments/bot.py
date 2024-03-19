@@ -3,8 +3,9 @@ import logging
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
-
-from handlers import show_media, other_handlers
+from infrastructure.payments.api import NowPaymentsAPI
+from middlewares.nowpayments import PaymentsMiddleware
+from handlers.payments import payments_router
 from config.config import load_config, Config
 
 
@@ -22,7 +23,7 @@ async def main():
     nowpayments = NowPaymentsAPI(config.payments_api_key)
     dp = Dispatcher(storage=storage)
     dp.include_router(payments_router)
-    dp.include_router(other_handlers.router)
+    # dp.include_router(other_handlers.router)
     dp.message.middleware(PaymentsMiddleware(nowpayments))
     dp.callback_query.middleware(PaymentsMiddleware(nowpayments))
     await dp.start_polling(bot)
