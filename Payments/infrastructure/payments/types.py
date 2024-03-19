@@ -4,10 +4,14 @@ from typing import Optional, List
 
 class PaymentStatus:
     WAITING = 'waiting'
+    CONFIRMING = 'confirming'
     CONFIRMED = 'confirmed'
     SENDING = 'sending'
+    PARTIALLY_PAID = 'partially_paid'
     FINISHED = 'finished'
     FAILED = 'failed'
+    REFUNDED = 'refunded'
+    EXPIRED = 'expired'
 
 
 class Payment(BaseModel):

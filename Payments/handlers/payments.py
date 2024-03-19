@@ -9,27 +9,6 @@ from middlewares import nowpayments
 payments_router = Router()
 
 
-@payments_router.message(CommandStart())
-async def cmd_start(message: Message):
-    if message.from_user.first_name:
-        text = f'Привет, {message.from_user.first_name}!'
-    else:
-        text = 'Привет!'
-    await message.answer(text)
-    await message.answer(
-        'Это задание к уроку 7.11 <b>"Прием платежей с помощью API"</b>\n\n'
-        'Для начала выполнения наберите команду /payment\n'
-        'Для возврата в начальное меню наберите команду /cancel'
-    )
-
-
-@payments_router.message(Command('cancel'))
-async def cmd_cancel(message: Message):
-    await message.answer(
-        'Вернулись в начало'
-    )
-
-
 @payments_router.message(Command('payment'))
 async def payment(message: Message, nowpayments: NowPaymentsAPI):
     try:

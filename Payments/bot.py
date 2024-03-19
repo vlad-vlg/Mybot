@@ -6,6 +6,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from infrastructure.payments.api import NowPaymentsAPI
 from middlewares.nowpayments import PaymentsMiddleware
 from handlers.payments import payments_router
+from handlers.user_handlers import user_router
 from config.config import load_config, Config
 
 
@@ -22,8 +23,8 @@ async def main():
               )
     nowpayments = NowPaymentsAPI(config.payments_api_key)
     dp = Dispatcher(storage=storage)
+    dp.include_router(user_router)
     dp.include_router(payments_router)
-    # dp.include_router(other_handlers.router)
     dp.message.middleware(PaymentsMiddleware(nowpayments))
     dp.callback_query.middleware(PaymentsMiddleware(nowpayments))
     await dp.start_polling(bot)
