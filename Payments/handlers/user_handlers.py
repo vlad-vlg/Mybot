@@ -12,6 +12,12 @@ class Goods(CallbackData, prefix='goods'):
     price: float
 
 
+class Payments(CallbackData, prefix='payment'):
+    my_item_name: str
+    my_item_price: float
+    my_currency: str
+
+
 items = {
     'Шляпа': 19.99,
     'Сумка': 25,
@@ -30,8 +36,7 @@ def get_menu_items(x):
             text=name,
             callback_data=Goods(
                 name=name,
-                price=price,
-                my_item=my_item
+                price=price
             )
         )
     builder.adjust(1)
@@ -39,13 +44,17 @@ def get_menu_items(x):
     return menu_items_kbd
 
 
-def get_menu_currencies():
+def get_menu_currencies(my_item):
     builder = InlineKeyboardBuilder()
 
     for i in range(12):
         builder.button(
             text=my_currencies[i],
-            callback_data=my_currencies[i]
+            callback_data=Payments(
+                my_item_name=my_item['name'],
+                my_item_price=my_item['price'],
+                my_currency=my_currencies[i]
+            )
         )
     builder.adjust(4)
     menu_currencies_kbd = builder.as_markup()
@@ -100,7 +109,7 @@ async def select_item(call: CallbackQuery, callback_data: Goods):
 
 @user_router.message(Command('currency'))
 async def cmd_currency(message: Message):
-    menu_currencies_kbd = get_menu_currencies()
+    menu_currencies_kbd = get_menu_currencies(my_item)
     await message.answer(
         'Выберите валюту платежа',
         reply_markup=menu_currencies_kbd

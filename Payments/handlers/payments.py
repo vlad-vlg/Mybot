@@ -1,35 +1,33 @@
-from aiogram import Router, F, Bot
-from aiogram.filters import Command, CommandStart
+from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
+from handlers.user_handlers import Payments
 from infrastructure.payments.api import NowPaymentsAPI
 from infrastructure.payments.exception import APINotAvailable
-from infrastructure.payments.types import Payment, PaymentStatus, PaymentUpdate
-from middlewares import nowpayments
+from infrastructure.payments.types import Payment, PaymentStatus
+
 
 payments_router = Router()
 
 
-@payments_router.callback_query()
-async def payment(call: CallbackQuery, nowpayments: NowPaymentsAPI):
+@payments_router.callback_query(Payments.filter())
+async def payment(call: CallbackQuery, callback_data: Payments, nowpayments: NowPaymentsAPI):
     try:
         await nowpayments.get_api_status()
     except APINotAvailable as e:
         await call.message.answer(f'API is not available: {e}')
         return
 
-    my_currency = call.data
-    currencies = await nowpayments.get_available_currencies()
+    price = callback_data.my_item_price
+    name = callback_data.my_item_name
+    my_currency = callback_data.my_currency
 
+    currencies = await nowpayments.get_available_currencies()
     if my_currency not in currencies:
         await call.answer(
             'Данная криптовалюта не поддерживается!\n'
             'Выберите другую валюту платежа.',
             show_alert=True
         )
-
-    price = my_item['price']
-    name = my_item.get('name', None)
-    # currency = 'btc'
     payment: Payment = await nowpayments.create_payment(
         price_amount=price,
         price_currency='usd',
