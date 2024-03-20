@@ -1,7 +1,7 @@
 from aiogram import F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import Message, KeyboardButton, CallbackQuery
+from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 user_router = Router()
@@ -13,38 +13,41 @@ class Goods(CallbackData, prefix='goods'):
 
 
 items = {
-    'Шляпа': 19,99,
+    'Шляпа': 19.99,
     'Сумка': 25,
-    'Зонт': 49,99
+    'Зонт': 49.99
 }
+my_currencies = ['btc', 'eth', 'xmr', 'zec', 'xvg', 'ada', 'ltc', 'bch', 'ark', 'waves', 'bnb', 'apt']
 
 
-def get_menu_items():
+def get_menu_items(x):
     builder = InlineKeyboardBuilder()
-    builder.button(
-        text='Шляпа',
-        callback_data=Goods(
-            name='Шляпа',
-            price=19,99
+    for key in x:
+        name = key
+        price = x[key]
+        builder.button(
+            text=name,
+            callback_data=Goods(
+                name=name,
+                price=price
+            )
         )
-    )
-    builder.button(
-        text='Сумка',
-        callback_data=Goods(
-            name='Сумка',
-            price=25
-        )
-    )
-    builder.button(
-        text='Зонт',
-        callback_data=Goods(
-            name='Зонт',
-            price=49,99
-        )
-    )
     builder.adjust(1)
     menu_items_kbd = builder.as_markup()
     return menu_items_kbd
+
+
+def get_menu_currencies():
+    builder = InlineKeyboardBuilder()
+
+    for i in range(12):
+        builder.button(
+            text=my_currencies[i],
+            callback_data=my_currencies[i]
+        )
+    builder.adjust(4)
+    menu_currencies_kbd = builder.as_markup()
+    return menu_currencies_kbd
 
 
 @user_router.message(CommandStart())
@@ -70,7 +73,7 @@ async def cmd_cancel(message: Message):
 
 @user_router.message(Command('items'))
 async def cmd_items(message: Message):
-    menu_items_kbd = get_menu_items()
+    menu_items_kbd = get_menu_items(items)
     await message.answer(
         'Выберите товар',
         reply_markup=menu_items_kbd
@@ -81,14 +84,19 @@ async def cmd_items(message: Message):
 async def select_item(call: CallbackQuery, callback_data: Goods):
     name = callback_data.name
     price = callback_data.price
-    # button_item = call.message.reply_markup.inline_keyboard[int(item_id)-1]
-    # item = button_item[0].text
     await call.message.answer(
         text='Вы Выбрали: \n'
-        f'<b>{name}</b>\n'
-        # f'ID товара - {item_id}\n'
-        # f'Категория  - {category}\n\n',
-        # reply_markup=get_menu_task_3()
-        f'Теперь выберите валюту платежа - наберите команду /currency'
+             f'<b>{name}</b>\n'
+             f'Цена товара - ${price}\n'
+             f'Теперь выберите валюту платежа - наберите команду /currency'
     )
     await call.answer(text='Отличный выбор!')
+
+
+@user_router.message(Command('currency'))
+async def cmd_currency(message: Message):
+    menu_currencies_kbd = get_menu_currencies()
+    await message.answer(
+        'Выберите валюту платежа',
+        reply_markup=menu_currencies_kbd
+    )
