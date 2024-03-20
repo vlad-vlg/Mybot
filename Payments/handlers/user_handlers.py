@@ -18,6 +18,7 @@ items = {
     'Зонт': 49.99
 }
 my_currencies = ['btc', 'eth', 'xmr', 'zec', 'xvg', 'ada', 'ltc', 'bch', 'ark', 'waves', 'bnb', 'apt']
+my_item = {}
 
 
 def get_menu_items(x):
@@ -29,7 +30,8 @@ def get_menu_items(x):
             text=name,
             callback_data=Goods(
                 name=name,
-                price=price
+                price=price,
+                my_item=my_item
             )
         )
     builder.adjust(1)
@@ -84,12 +86,15 @@ async def cmd_items(message: Message):
 async def select_item(call: CallbackQuery, callback_data: Goods):
     name = callback_data.name
     price = callback_data.price
+    my_item['name'] = name
+    my_item['price'] = price
     await call.message.answer(
         text='Вы Выбрали: \n'
-             f'<b>{name}</b>\n'
-             f'Цена товара - ${price}\n'
+             f'Наименование: <b>{name}</b>\n'
+             f'Цена товара: <b>${price}</b>\n'
              f'Теперь выберите валюту платежа - наберите команду /currency'
     )
+    print(my_item)
     await call.answer(text='Отличный выбор!')
 
 

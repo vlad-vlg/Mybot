@@ -27,14 +27,15 @@ async def payment(call: CallbackQuery, nowpayments: NowPaymentsAPI):
             show_alert=True
         )
 
-    price = 20
+    price = my_item['price']
+    name = my_item.get('name', None)
     # currency = 'btc'
     payment: Payment = await nowpayments.create_payment(
         price_amount=price,
         price_currency='usd',
         pay_currency=my_currency,
         order_id='123',
-        order_description='name'
+        order_description=name
     )
     await call.message.answer(
         f'Пожалуйста, отправьте не менее <b>{payment.pay_amount:.6f} {my_currency.upper()}</b> на адрес ниже.\n'
