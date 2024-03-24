@@ -33,9 +33,9 @@ async def main():
         db=config.db.database
     )
     dp = Dispatcher(storage=storage)
-    dp.include_router(user_router)
-    dp.include_router(payments_router)
-    dp.include_router(other_router)
+    dp.include_routers(user_router, payments_router, other_router)
+#    dp.include_router(payments_router)
+#    dp.include_router(other_router)
     dp.message.middleware(PaymentsMiddleware(nowpayments))
     dp.callback_query.middleware(PaymentsMiddleware(nowpayments))
     dp.message.middleware(DatabaseMiddleware(aiomysql_pool))

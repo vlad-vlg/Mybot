@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `transactions` (
     `pay_address` VARCHAR(255) NOT NULL,
     `currency` VARCHAR(16) NOT NULL,
     `usd_amount` DECIMAL(16, 4) NOT NULL,
-    `pay_amount` DECIMAL(16, 4) NOT NULL,
+    `pay_amount` DECIMAL(16, 8) NOT NULL,
     `paid` BOOLEAN NOT NULL DEFAULT FALSE,
     `payment_id` INT NULL,
     `order_id` INT NULL,
