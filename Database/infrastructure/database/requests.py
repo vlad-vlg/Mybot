@@ -117,3 +117,16 @@ async def confirm_order(db_connection, order_id: int):
     )
     await db_connection.commit()
     await cursor.close()
+
+
+async def get_user_id_from_tx(db_connection, payment_id: int):
+    cursor = await db_connection.cursor()
+    await cursor.execute(
+        'SELECT user_id FROM transactions WHERE payment_id = %s',
+        (payment_id,)
+    )
+    user_id = await cursor.fetchone()
+    await cursor.close()
+    return user_id
+
+

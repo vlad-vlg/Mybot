@@ -1,15 +1,16 @@
 import json
-from aiogram import Router, F
+from aiogram import Router, F, Bot
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from Database.handlers.user_handlers import Payments
 from Database.infrastructure.database.requests import create_new_order, get_order, create_transaction, \
-    update_transaction, get_order_id_from_tx, confirm_order, get_balance
+    update_transaction, get_order_id_from_tx, confirm_order, get_balance, get_user_id_from_tx
 from infrastructure.payments.api import NowPaymentsAPI
 from infrastructure.payments.exception import APINotAvailable
 from infrastructure.payments.types import Payment, PaymentStatus
 
 payments_router = Router()
+
 
 # @payments_router.message(Command('create_order'))
 # async def cmd_create_order(message: Message, db_connection):
@@ -157,7 +158,6 @@ async def check_payment(message: Message, nowpayments: NowPaymentsAPI, payment_i
             f'Платеж <code>{payment_id}</code> подтвержден.\n'
             f'Оплата заказа № <code>{order_id}</code> прошла успешно.'
         )
-
     else:
         await message.answer(
             f'Платеж <code>{payment_id}</code> еще не подтвержден!\n'
@@ -172,15 +172,19 @@ async def cmd_get_balance(message: Message, db_connection):
 
 
 @payments_router.message(Command('approve_payment'))
-async def cmd_approve_payment(message: Message, nowpayments: NowPaymentsAPI, payment_id, db_connection):
-    payment_id = payment_id_match.group(1)
-    payment_status = await nowpayments.get_payment_status(payment_id)
-
-    if payment_status.payment_status in (PaymentStatus.CONFIRMED, PaymentStatus.FINISHED):
-        await update_transaction(db_connection, payment_id)
-        order_id = await get_order_id_from_tx(db_connection, payment_id)
-        await confirm_order(db_connection, order_id)
-        await message.answer(
-            f'Платеж <code>{payment_id}</code> подтвержден.\n'
-            f'Оплата заказа № <code>{order_id}</code> прошла успешно.'
-        )
+async def cmd_approve_payment(message: Message, bot: Bot, nowpayments: NowPaymentsAPI, payment_id, order_id, db_connection):
+    # payment_id = payment_id_match.group(1)
+    # payment_status = await nowpayments.get_payment_status(payment_id)
+    # if payment_status.payment_status in (PaymentStatus.CONFIRMED, PaymentStatus.FINISHED):
+    await update_transaction(db_connection, payment_id)
+    order_id = await get_order_id_from_tx(db_connection, payment_id)
+    user_id = await get_user_id_from_tx(db_connection, payment_id)
+    await confirm_order(db_connection, order_id)
+    await message.answer(
+        f'Платеж <code>{payment_id}</code> подтвержден.\n'
+        f'Оплата заказа № <code>{order_id}</code> прошла успешно.'
+    )
+    await bot.send_message(user_id,
+                           text=f'Ваш Платеж <code>{payment_id}</code> подтвержден.\n'
+                                f'Оплата Вашего заказа № <code>{order_id}</code> прошла успешно.'
+                           )

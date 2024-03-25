@@ -1,3 +1,5 @@
+
+
 CREATE TABLE IF NOT EXISTS `users` (
     `telegram_id` BIGINT NOT NULL,
     `username` VARCHAR(255) NULL,
