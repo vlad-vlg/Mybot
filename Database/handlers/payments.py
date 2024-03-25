@@ -10,6 +10,7 @@ from infrastructure.payments.exception import APINotAvailable
 from infrastructure.payments.types import Payment, PaymentStatus
 
 payments_router = Router()
+admins_router = Router()
 
 
 # @payments_router.message(Command('create_order'))
@@ -171,20 +172,63 @@ async def cmd_get_balance(message: Message, db_connection):
     await message.answer(f'Ваш баланс: {balance:.2f}')
 
 
-@payments_router.message(Command('approve_payment'))
-async def cmd_approve_payment(message: Message, bot: Bot, nowpayments: NowPaymentsAPI, payment_id, order_id, db_connection):
-    # payment_id = payment_id_match.group(1)
-    # payment_status = await nowpayments.get_payment_status(payment_id)
-    # if payment_status.payment_status in (PaymentStatus.CONFIRMED, PaymentStatus.FINISHED):
+@admins_router.message(F.text.regexp(r'^/approve_payment_(\d+)_(\d+)$').as_('order_match'))
+async def cmd_approve_payment(message: Message, bot: Bot, nowpayments: NowPaymentsAPI,
+                              order_match, db_connection):
+    order_id = order_match.group(1)
+    payment_id = order_match.group(2)
+
+    amount, paid_status = await get_order(db_connection, order_id)
+
+    if paid_status:
+        await message.answer(f'Заказ № {order_id} уже оплачен')
+        return
+
     await update_transaction(db_connection, payment_id)
-    order_id = await get_order_id_from_tx(db_connection, payment_id)
-    user_id = await get_user_id_from_tx(db_connection, payment_id)
     await confirm_order(db_connection, order_id)
     await message.answer(
         f'Платеж <code>{payment_id}</code> подтвержден.\n'
         f'Оплата заказа № <code>{order_id}</code> прошла успешно.'
     )
+    (user_id, ) = await get_user_id_from_tx(db_connection, payment_id)
+    print(user_id)
     await bot.send_message(user_id,
                            text=f'Ваш Платеж <code>{payment_id}</code> подтвержден.\n'
                                 f'Оплата Вашего заказа № <code>{order_id}</code> прошла успешно.'
                            )
+
+
+# @payments_router.message(Command('add_payment'))
+# async def cmd_approve_payment(message: Message, bot: Bot, db_connection, user_id, usd_amount, pay_amount, currency,
+#                               pay_address, payment_id):
+#     await create_transaction(
+#         db_connection,
+#         user_id,
+#         usd_amount,
+#         pay_amount,
+#         currency,
+#         pay_address,
+#         payment_id
+#     )
+#     await create_transaction(
+#         db_connection,
+#         user_id,
+#         usd_amount,
+#         pay_amount,
+#         currency,
+#         pay_address,
+#         payment_id
+#     )
+#
+#     await update_transaction(db_connection, payment_id)
+#     # order_id = await get_order_id_from_tx(db_connection, payment_id)
+#     # user_id = await get_user_id_from_tx(db_connection, payment_id)
+#     # await confirm_order(db_connection, order_id)
+#     await message.answer(
+#         f'Платеж <code>{payment_id}</code> подтвержден.\n'
+# #        f'Оплата заказа № <code>{order_id}</code> прошла успешно.'
+#     )
+#     await bot.send_message(user_id,
+#                            text=f'Ваш Платеж <code>{payment_id}</code> подтвержден.\n'
+#                                 f'Оплата Вашего заказа № <code>{order_id}</code> прошла успешно.'
+#                            )

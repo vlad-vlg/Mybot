@@ -7,7 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from infrastructure.payments.api import NowPaymentsAPI
 from middlewares.nowpayments import PaymentsMiddleware
 from middlewares.database import DatabaseMiddleware
-from handlers.payments import payments_router
+from handlers.payments import payments_router, admins_router
 from handlers.user_handlers import user_router
 from handlers.other_handlers import other_router
 from config.config import load_config, Config
@@ -33,7 +33,7 @@ async def main():
         db=config.db.database
     )
     dp = Dispatcher(storage=storage)
-    dp.include_routers(user_router, payments_router, other_router)
+    dp.include_routers(admins_router, user_router, payments_router, other_router)
 #    dp.include_router(payments_router)
 #    dp.include_router(other_router)
     dp.message.middleware(PaymentsMiddleware(nowpayments))
