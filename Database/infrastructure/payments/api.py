@@ -97,6 +97,7 @@ class NowPaymentsAPI:
         print(currencies)
         return currencies
 
+
 if __name__ == '__main__':
     async def main():
         api = NowPaymentsAPI('')
