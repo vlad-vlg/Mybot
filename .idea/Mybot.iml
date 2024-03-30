@@ -7,6 +7,9 @@
       <sourceFolder url="file://$MODULE_DIR$/stone-paper-bot" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Buttons" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/Media" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Payments" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Database" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/Django" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9 (Mybot)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
