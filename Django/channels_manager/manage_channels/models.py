@@ -2,21 +2,15 @@ from django.db import models
 
 
 # Create your models here.
-class User(models.Model):
-    name = models.CharField(max_length=255)
+class Student(models.Model):
+    name = models.CharField(max_length=100)
     age = models.IntegerField()
     email = models.EmailField(max_length=100)
     is_enrolled = models.BooleanField(default=False)
-    course1_id = models.IntegerField()
-    grade1_id = models.IntegerField()
-    course2_id = models.IntegerField()
-    grade2_id = models.IntegerField()
-    course3_id = models.IntegerField()
-    grade3_id = models.IntegerField()
     registered_at = models.DateTimeField()
 
     class Meta:
-        db_table = 'users'
+        db_table = 'students'
 
 
 class Course(models.Model):
@@ -27,6 +21,8 @@ class Course(models.Model):
 
 
 class Grade(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
     grade = models.IntegerField()
 
     class Meta:
