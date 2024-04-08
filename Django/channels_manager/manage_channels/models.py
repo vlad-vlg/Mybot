@@ -9,12 +9,18 @@ class Student(models.Model):
     is_enrolled = models.BooleanField(default=False)
     registered_at = models.DateTimeField()
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         db_table = 'students'
 
 
 class Course(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         db_table = 'courses'

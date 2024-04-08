@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'channels_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bot_db',
+        'NAME': 'bot2_db',
         'USER': 'admin',
         'PASSWORD': '2900',
         'HOST': 'localhost',
