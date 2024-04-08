@@ -1,0 +1,202 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "age": 25,
+    "email": "johndoe@example.com",
+    "is_enrolled": true,
+    "courses": ["Math", "Science", "History"],
+    "grades": {"Math": 85, "Science": 90, "History": 95},
+    "registered_at": "2022-01-01T12:00:00Z"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "age": 22,
+    "email": "janesmith@example.com",
+    "is_enrolled": false,
+    "courses": ["English", "Art"],
+    "grades": {"English": 80, "Art": 90},
+    "registered_at": "2021-05-01T09:00:00Z"
+  },
+  {
+    "id": 3,
+    "name": "Sam Johnson",
+    "age": 24,
+    "email": "samjohnson@example.com",
+    "is_enrolled": false,
+    "courses": ["Music", "Physical Education"],
+    "grades": {"Music": 85, "Physical Education": 89},
+    "registered_at": "2021-12-01T18:00:00Z"
+  },
+  {
+    "id": 4,
+    "name": "Bob Brown",
+    "age": 30,
+    "email": "bobbrown@example.com",
+    "is_enrolled": true,
+    "courses": ["Math", "Computer Science"],
+    "grades": {"Math": 90, "Computer Science": 95},
+    "registered_at": "2022-02-01T15:00:00Z"
+  },
+  {
+    "id": 5,
+    "name": "Tom Davis",
+    "age": 21,
+    "email": "tomdavis@example.com",
+    "is_enrolled": false,
+    "courses": ["Biology", "Psychology"],
+    "grades": {"Biology": 87, "Psychology": 92},
+    "registered_at": "2022-03-01T10:00:00Z"
+  },
+  {
+    "id": 6,
+    "name": "Diana Miller",
+    "age": 27,
+    "email": "dianamiller@example.com",
+    "is_enrolled": false,
+    "courses": ["Chemistry", "Philosophy"],
+    "grades": {"Chemistry": 95, "Philosophy": 99},
+    "registered_at": "2021-07-01T11:00:00Z"
+  },
+  {
+    "id": 7,
+    "name": "Jeff Anderson",
+    "age": 29,
+    "email": "jeffanderson@example.com",
+    "is_enrolled": true,
+    "courses": ["Economics", "English"],
+    "grades": {"Economics": 80, "English": 85},
+    "registered_at": "2022-04-01T13:00:00Z"
+  },
+  {
+    "id": 8,
+    "name": "Mark Wilson",
+    "age": 32,
+    "email": "markwilson@example.com",
+    "is_enrolled": true,
+    "courses": ["History", "French"],
+    "grades": {"History": 80, "French": 83},
+    "registered_at": "2022-05-01T14:00:00Z"
+  },
+  {
+    "id": 9,
+    "name": "Steve Moore",
+    "age": 26,
+    "email": "stevemoore@example.com",
+    "is_enrolled": true,
+    "courses": ["Biology", "Classical Greek"],
+    "grades": {"Biology": 95, "Classical Greek": 95},
+    "registered_at": "2021-09-01T12:00:00Z"
+  },
+  {
+    "id": 10,
+    "name": "Sandy Taylor",
+    "age": 22,
+    "email": "sandytaylor@example.com",
+    "is_enrolled": false,
+    "courses": ["Geography", "Latin"],
+    "grades": {"Geography": 95, "Latin": 97},
+    "registered_at": "2022-06-01T18:00:00Z"
+  },
+  {
+    "id": 11,
+    "name": "Bill Jackson",
+    "age": 35,
+    "email": "billjackson@example.com",
+    "is_enrolled": true,
+    "courses": ["Philosophy", "Statistics"],
+    "grades": {"Philosophy": 80, "Statistics": 88},
+    "registered_at": "2022-07-01T17:00:00Z"
+  },
+  {
+    "id": 12,
+    "name": "Emily Harris",
+    "age": 28,
+    "email": "emilyharris@example.com",
+    "is_enrolled": false,
+    "courses": ["Chemistry", "Anthropology"],
+    "grades": {"Chemistry": 89, "Anthropology": 93},
+    "registered_at": "2022-08-01T16:00:00Z"
+  },
+  {
+    "id": 13,
+    "name": "Justin Wilson",
+    "age": 33,
+    "email": "justinwilson@example.com",
+    "is_enrolled": true,
+    "courses": ["Mathematics", "English Literature"],
+    "grades": {"Mathematics": 95, "English Literature": 93},
+    "registered_at": "2021-10-01T15:00:00Z"
+  },
+  {
+    "id": 14,
+    "name": "Kim Anderson",
+    "age": 21,
+    "email": "kimanderson@example.com",
+    "is_enrolled": false,
+    "courses": ["Geology", "Political Science"],
+    "grades": {"Geology": 85, "Political Science": 90},
+    "registered_at": "2021-11-01T14:00:00Z"
+  },
+  {
+    "id": 15,
+    "name": "Adam Johnson",
+    "age": 31,
+    "email": "adamjohnson@example.com",
+    "is_enrolled": true,
+    "courses": ["Physics", "Classical Greek"],
+    "grades": {"Physics": 98, "Classical Greek": 95},
+    "registered_at": "2022-09-01T13:00:00Z"
+  },
+  {
+    "id": 16,
+    "name": "Linda Williams",
+    "age": 25,
+    "email": "lindawilliams@example.com",
+    "is_enrolled": false,
+    "courses": ["Computer Science", "Algebra"],
+    "grades": {"Computer Science": 80, "Algebra": 99},
+    "registered_at": "2021-12-01T12:00:00Z"
+  },
+  {
+    "id": 17,
+    "name": "Nancy Jones",
+    "age": 28,
+    "email": "nancyjones@example.com",
+    "is_enrolled": true,
+    "courses": ["Biology", "History"],
+    "grades": {"Biology": 87, "History": 88},
+    "registered_at": "2022-10-01T11:00:00Z"
+  },
+  {
+    "id": 18,
+    "name": "Daniel Taylor",
+    "age": 26,
+    "email": "danieltaylor@example.com",
+    "is_enrolled": true,
+    "courses": ["Psychology", "French"],
+    "grades": {"Psychology": 95, "French": 85},
+    "registered_at": "2022-11-01T10:00:00Z"
+  },
+  {
+    "id": 19,
+    "name": "Carl Brown",
+    "age": 20,
+    "email": "carlbrown@example.com",
+    "is_enrolled": false,
+    "courses": ["Art", "Anthropology"],
+    "grades": {"Art": 88, "Anthropology": 90},
+    "registered_at": "2021-06-01T09:00:00Z"
+  },
+  {
+    "id": 20,
+    "name": "Matthew Davis",
+    "age": 34,
+    "email": "matthewdavis@example.com",
+    "is_enrolled": false,
+    "courses": ["Latin", "Economics"],
+    "grades": {"Latin": 80, "Economics": 90},
+    "registered_at": "2021-03-01T08:00:00Z"
+  }
+]
