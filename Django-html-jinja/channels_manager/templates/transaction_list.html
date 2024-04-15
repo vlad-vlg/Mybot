@@ -1,3 +1,51 @@
 {% extends "base.HTML" %}
 {% block content %}
     <h1>Transaction List</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>User ID</th>
+            <th>Pay address</th>
+            <th>Currency</th>
+            <th>USD amount</th>
+            <th>Pay amount</th>
+            <th>Paid</th>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>Comment</th>
+            <th>Created at</th>
+            <th>Updated at</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            {% if transaction.paid %}
+              <tr class="paid">
+            {% else %}
+              <tr class="not-paid">
+            {% endif %}
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.user_id }}</td>
+                <td>{{ transaction.pay_address }}</td>
+                <td>{{ transaction.currency|upper }}</td>
+                <td>{{ transaction.usd_amount|round(2) }}</td>
+                <td>{{ transaction.pay_amount|round(6) }}</td>
+                <!-- <td>{{ transaction.paid }}</td> -->
+                <td>
+                {% if transaction.paid %}
+                  <img src="{{ static('images/checked-checkbox.png') }}" alt="paid" style="width: 20px; height: 20px;">
+                {% else %}
+                  <img src="{{ static('images/unchecked-checkbox.png') }}" alt="not-paid" style="width: 20px; height: 20px;">
+                {% endif %}
+                </td>
+                <td>{{ transaction.payment_id|default('-', true) }}</td>
+                <td>{{ transaction.order_id }}</td>
+                <td>{{ transaction.comment|default('Пусто', true) }}</td>
+                <td>{{ transaction.created_at.strftime("%Y-%m-%d") }}</td>
+                <td>{{ transaction.created_at.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+              </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

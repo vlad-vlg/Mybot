@@ -16,9 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from channels_manager.manage_channels import views
+from manage_channels import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('transactions/', views.transaction_list, name='transaction_list'),
+    path('transactions/', views.transaction_list, name='transaction_list')
 ]

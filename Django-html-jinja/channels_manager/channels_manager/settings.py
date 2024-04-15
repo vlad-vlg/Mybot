@@ -60,7 +60,7 @@ TEMPLATES = [
         'DIRS': ['templates'],
         'OPTIONS': {
             'environment': 'channels_manager.jinja2.environment',
-        }
+        },
     },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'channels_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bot2_db',
+        'NAME': 'bot_db',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',
@@ -134,7 +134,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static')
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type
