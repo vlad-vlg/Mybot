@@ -77,11 +77,18 @@ h2 {
     text-align: center;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #D3BF29;
+}
+
 header h1 {
     margin: 0;
     padding: 15px;
     font-size: 30px;
-    background-color: #D3BF29;
+
     color: #AEF3E4;
     font-weight: 600;
     text-align: left;
@@ -95,4 +102,39 @@ footer p {
     text-align: center;
     margin: 0 auto;
     padding: 20px;
+}
+
+.menu
+{
+    overflow: hidden;
+    height: 46px;
+/*
+    background-color: #D3BF29;
+*/
+}
+/*
+
+.menu:hover
+{
+    background-color: #D3BF29;
+}
+*/
+
+.menu a
+{
+    float: left;
+    display: block;
+    color: #AEF3E4;
+    text-align: center;
+    padding: 14px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    font-size: 20px;
+}
+
+.menu a:hover
+{
+    background-color: #ddd;
+    color: #009688;
 }

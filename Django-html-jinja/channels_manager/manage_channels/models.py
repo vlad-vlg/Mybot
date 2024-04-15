@@ -1,4 +1,5 @@
 from django.db import models
+from dataclasses import dataclass
 
 
 # Create your models here.
@@ -46,3 +47,17 @@ class Transaction(models.Model):
 
     class Meta:
         db_table = 'transactions'
+
+
+# @dataclass
+class PaidContent(models.Model):
+    paid_content_id = models.AutoField(primary_key=True)
+    content_name = models.CharField(max_length=100)
+    url = models.URLField()
+    content_HTML = models.TextField()
+
+    def __str__(self):
+        return self.content_name
+
+    class Meta:
+        db_table = 'paid_content'

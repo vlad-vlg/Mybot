@@ -1,0 +1,6 @@
+{% extends "base.HTML" %}
+{% block title %}{{ content.content_name }}{% endblock %}
+{% block content %}
+    {{ content.content_HTML|safe }}
+    <a href="{% url 'content_list' %}">Back to Content List</a>
+{% endblock %}
