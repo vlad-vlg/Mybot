@@ -2,11 +2,9 @@
 {% block title %}Paid Content List{% endblock %}
 {% block content %}
     <h1>Paid Content List</h1>
-    <ul>
+        <ul>
         {% for item in content %}
-            print(content_detail)
-            print(item.pk)
-            <li><a href="{{ item.url }}{{ item.pk }}">{{ item.content_name }}</a></li>
+            <li id="paid"><a href="{{ item.pk }}">{{ item.content_name }}</a></li>
         {% endfor %}
-    </ul>
+        </ul>
 {% endblock %}

@@ -21,6 +21,6 @@ def content_list(request):
 
 
 def content_detail(request, pk):
-    content = PaidContent.objects.get(pk=pk)
-    return render(request, 'content_detail.html', {'content': content})
+    content_x = PaidContent.objects.get(pk=pk)
+    return render(request, 'content_detail.html', {'content_x': content_x})
 

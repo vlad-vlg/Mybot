@@ -23,5 +23,5 @@ urlpatterns = [
     path('transactions/', views.transaction_list, name='transaction_list'),
     path('', views.index, name='index'),
     path('paid-content/', views.content_list, name='content_list'),
-    path('<int:pk>/', views.content_detail, name='content_detail'),
+    path('paid-content/<int:pk>/', views.content_detail, name='content_detail'),
 ]

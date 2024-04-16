@@ -104,24 +104,12 @@ footer p {
     padding: 20px;
 }
 
-.menu
-{
+.menu {
     overflow: hidden;
     height: 46px;
-/*
-    background-color: #D3BF29;
-*/
 }
-/*
 
-.menu:hover
-{
-    background-color: #D3BF29;
-}
-*/
-
-.menu a
-{
+.menu a {
     float: left;
     display: block;
     color: #AEF3E4;
@@ -133,8 +121,55 @@ footer p {
     font-size: 20px;
 }
 
-.menu a:hover
-{
+.menu a:hover {
     background-color: #ddd;
     color: #009688;
+}
+
+#paid a {
+    color: #009688;
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    font-size: 20px;
+}
+
+#paid a:hover {
+    color: #AEF3E4;
+}
+
+
+#button {
+    border: 1px solid #009688;
+    border-radius: 6px;
+    padding: 15px;
+    cursor: pointer;
+    height: 32px;
+    font-size: 14px;
+    box-shadow: 4px 4px 8px #999;
+    outline: none;
+    background-position: center;
+    transition: background 0.8s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #009688;
+}
+
+#button:hover{
+    background-color: #AEF3E4;
+}
+
+#button a {
+    color: #AEF3E4;
+}
+
+#button a:hover {
+    color: #009688;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
 }
