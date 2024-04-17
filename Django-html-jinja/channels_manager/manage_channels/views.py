@@ -20,7 +20,6 @@ def content_list(request):
     return render(request, 'content_list.html', {'content': content})
 
 
-def content_detail(request, pk):
-    content_x = PaidContent.objects.get(pk=pk)
+def content_detail(request, url):
+    content_x = PaidContent.objects.get(url=url)
     return render(request, 'content_detail.html', {'content_x': content_x})
-
